@@ -25,17 +25,15 @@ jobs:
         run: pip install semgrep
 
       - name: Run Semgrep
-        working-directory: app
-        run: semgrep --config auto --json > /github/workspace/semgrep-report.json
+        run: |
+          mkdir -p ../out
+          semgrep --config auto --json > ../out/semgrep-report.json
 
       - name: Print findings
-        run: cat /github/workspace/semgrep-report.json
+        run: cat ../out/semgrep-report.json
 
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-report
-          path: semgrep-report.json
-
-
-      
+          path: out/semgrep-report.json
