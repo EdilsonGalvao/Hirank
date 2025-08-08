@@ -16,6 +16,8 @@ jobs:
     defaults:
       run:
         working-directory: app
+    env:
+      DC_DATA_DIR: ${{ github.workspace }}/.dc-data
 
     steps:
       - name: Checkout código
@@ -26,14 +28,43 @@ jobs:
 
       - name: Run Semgrep
         run: |
-          mkdir -p ../out
-          semgrep --config auto --json > ../out/semgrep-report.json
-
-      - name: Print findings
-        run: cat ../out/semgrep-report.json
+          mkdir -p ../out          
 
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: semgrep-report
-          path: out/semgrep-report.json
+         name: semgrep-report
+         path: out/semgrep-report.json
+
+      - name: Cache Dependency-Check Data
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.DC_DATA_DIR }}
+          key: ${{ runner.os }}-dcdata-${{ env.DC_VERSION }}
+
+      - name: Instalar Dependency-Check
+        run: |
+          apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.7/dependency-check-9.0.7-release.zip
+          unzip dependency-check-9.0.7-release.zip -d ../tools
+
+      - name: Rodar Dependency-Check
+        continue-on-error: true
+        run: |
+          mkdir -p ../out
+          ../tools/dependency-check/bin/dependency-check.sh \
+            --project "App Project" \
+            --scan . \
+            --format "JSON" \
+            --data "${DC_DATA_DIR}" \
+            --nvdApiKey "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"} \
+            --disableArchive \
+            --failOnCVSS 0 \
+            --out ../out
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: dc-security-reports
+          path: out/
