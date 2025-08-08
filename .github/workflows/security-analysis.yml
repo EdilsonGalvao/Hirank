@@ -67,7 +67,6 @@ jobs:
             --scan . \
             --format "JSON" \
             --data "${DC_DATA_DIR}" \            
-            --nvdApiKey "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9" \
             --disableNvd
             --disableArchive \
             --failOnCVSS 0 \
@@ -78,4 +77,5 @@ jobs:
         with:
           name: dc-security-reports
           path: out/
+
 
