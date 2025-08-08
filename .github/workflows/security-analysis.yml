@@ -26,9 +26,13 @@ jobs:
       - name: Instalar Semgrep
         run: pip install semgrep
 
+      - name : Tool version
+        run: semgrep --version
+
       - name: Run Semgrep
         run: |
-          mkdir -p ../out          
+          mkdir -p ../out
+          semgrep --config auto --json > ../out/semgrep-report.json
 
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4
@@ -68,3 +72,4 @@ jobs:
         with:
           name: dc-security-reports
           path: out/
+
