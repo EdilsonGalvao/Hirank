@@ -33,7 +33,6 @@ jobs:
         run: |
           mkdir -p ../out
           semgrep --config auto --json > ../out/semgrep-report.json
-
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -46,12 +45,18 @@ jobs:
         with:
           path: ${{ env.DC_DATA_DIR }}
           key: ${{ runner.os }}-dcdata-${{ env.DC_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-dcdata-
 
       - name: Instalar Dependency-Check
         run: |
           apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.7/dependency-check-9.0.7-release.zip
           unzip dependency-check-9.0.7-release.zip -d ../tools
+      
+      - name: Verificar Dependency-Check Version
+        run: |
+          ../tools/dependency-check/bin/dependency-check.sh --version
 
       - name: Rodar Dependency-Check
         continue-on-error: true
@@ -62,7 +67,7 @@ jobs:
             --scan . \
             --format "JSON" \
             --data "${DC_DATA_DIR}" \
-            --nvdApiKey "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"} \
+            --nvdApiKey "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9" \
             --disableArchive \
             --failOnCVSS 0 \
             --out ../out
@@ -72,4 +77,3 @@ jobs:
         with:
           name: dc-security-reports
           path: out/
-
