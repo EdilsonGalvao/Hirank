@@ -63,15 +63,16 @@ jobs:
             --failOnCVSS 0 \
             --out ${{ github.workspace }}/out
 
+      # Passo de diagnóstico: Verificar conteúdo do diretório de saída
       - name: Verificar conteúdo do diretório de saída
         run: |
           echo "Conteúdo do diretório de saída:"
-          ls -alR 
-     
-      - name: Verificar conteúdo do diretório de saída
+          ls -alR ${{ github.workspace }}/out
+
+      # Passo de diagnóstico: Verificar permissões do arquivo
+      - name: Verificar permissões do arquivo
         run: |
-          echo "Conteúdo do diretório de saída:"
-          ls -alR ${{ github.workspace }}/out    
+          ls -l ${{ github.workspace }}/out/dependency-check-report.json
           
       - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
