@@ -55,15 +55,15 @@ jobs:
             --data "${{ env.DC_DATA_DIR }}" \
             --disableArchive \
             --failOnCVSS 0 \
-            --out /out
+            --out ${{ github.workspace }}/out
 
       - name: Verificar conteúdo do diretório de saída
         run: |
           echo "Conteúdo do diretório de saída:"
-          ls -alR /out
+          ls -alR ${{ github.workspace }}/out
           
       - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: out/dependency-check-report.json
+          path: ${{ github.workspace }}/out/dependency-check-report.json
