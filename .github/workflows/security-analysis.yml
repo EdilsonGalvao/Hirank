@@ -42,6 +42,12 @@ jobs:
             wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
             unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
       
+      - name: Verificar diretório de trabalho
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -alh
+
       - name: DC Version
         run: |
           $DC_INSTALL_DIR/bin/dependency-check.sh --version
