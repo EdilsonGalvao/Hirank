@@ -34,7 +34,7 @@ jobs:
           if [ ! -d "$DC_INSTALL_DIR" ]; then
             apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
             wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
-            mkdir -p DC_INSTALL_DIR
+             mkdir -p ${{ github.workspace }}/tools/dependency-check
             unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d $DC_INSTALL_DIR
           else
             echo "DC Already Installed."
