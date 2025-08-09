@@ -59,6 +59,7 @@ jobs:
           ../tools/dependency-check/bin/dependency-check.sh --version
 
       - name : Purge DC Database
+        continue-on-error: true
         run: ../tools/dependency-check/bin/dependency-check.sh --purge        
 
       - name: Rodar Dependency-Check
