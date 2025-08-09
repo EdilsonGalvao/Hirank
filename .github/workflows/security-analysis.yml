@@ -24,55 +24,72 @@ jobs:
       DC_API_KEY: "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"
 
     steps:
-      - name: SCA - Install Dependency-Check
+      - name: SAST - Semgrep Installa
+        run: pip install semgrep
+
+      - name : SAST - Tool version
+        run: semgrep --version
+
+      - name: SAST - Run Semgrep
         run: |
-            apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
-            wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
-            unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
+          mkdir -p ../out
+          semgrep --config auto --json > ../out/semgrep-report.json
 
-      - name: SCA - DC Version
-        run: |
-          ../tools/dependency-check/bin/dependency-check.sh --version
-
-      - name : SCA - Purge DC Database IF EXIST
-        continue-on-error: true
-        run: | 
-          if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db ]; then           
-            $DC_INSTALL_DIR/bin/dependency-check.sh --purge 
-          else
-            echo "Database not exist!"
-          fi       
-
-      - name: SCA - Rodar Dependency-Check
-        continue-on-error: true
-        run: |
-          mkdir -p out
-          ../tools/dependency-check/bin/dependency-check.sh \
-            --project "app" \
-            --scan . \
-            --format "JSON" \
-            --nvdApiKey ${{env.DC_API_KEY}} \
-            --data "${{ env.DC_DATA_DIR }}" \
-            --disableArchive \
-            --failOnCVSS 0 \
-            --out ${{ github.workspace }}/out
-
-      - name: Verificar conteúdo do diretório de saída
-        run: |
-          echo "Conteúdo do diretório de saída:"
-          ls -alR ${{ github.workspace }}/out
-
-      - name: Verificar permissões do arquivo
-        run: |
-          ls -l ${{ github.workspace }}/out/dependency-check-report.json
-
-      - name: Print conteúdo do relatório
-        run: |
-          cat ${{ github.workspace }}/out/dependency-check-report.json
-
-      - name: SCA - Upload Reports
+      - name: SAST - Upload Semgrep Report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: dc-security-reports
-          path: ${{ github.workspace }}/out/dependency-check-report.json
+         name: semgrep-report
+         path: out/semgrep-report.json
 
+      # - name: SCA - Install Dependency-Check
+      #   run: |
+      #       apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
+      #       wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
+      #       unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
+
+      # - name: SCA - DC Version
+      #   run: |
+      #     ../tools/dependency-check/bin/dependency-check.sh --version
+
+      # - name : SCA - Purge DC Database IF EXIST
+      #   continue-on-error: true
+      #   run: | 
+      #     if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db ]; then           
+      #       $DC_INSTALL_DIR/bin/dependency-check.sh --purge 
+      #     else
+      #       echo "Database not exist!"
+      #     fi       
+
+      # - name: SCA - Rodar Dependency-Check
+      #   continue-on-error: true
+      #   run: |
+      #     mkdir -p out
+      #     ../tools/dependency-check/bin/dependency-check.sh \
+      #       --project "app" \
+      #       --scan . \
+      #       --format "JSON" \
+      #       --nvdApiKey ${{env.DC_API_KEY}} \
+      #       --data "${{ env.DC_DATA_DIR }}" \
+      #       --disableArchive \
+      #       --failOnCVSS 0 \
+      #       --out ${{ github.workspace }}/out
+
+      # - name: Verificar conteúdo do diretório de saída
+      #   run: |
+      #     echo "Conteúdo do diretório de saída:"
+      #     ls -alR ${{ github.workspace }}/out
+
+      # - name: Verificar permissões do arquivo
+      #   run: |
+      #     ls -l ${{ github.workspace }}/out/dependency-check-report.json
+
+      # - name: Print conteúdo do relatório
+      #   run: |
+      #     cat ${{ github.workspace }}/out/dependency-check-report.json
+
+      # - name: SCA - Upload Reports
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dc-security-reports
+      #     path: ${{ github.workspace }}/out/dependency-check-report.json
