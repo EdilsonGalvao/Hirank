@@ -28,12 +28,14 @@ jobs:
       - name: Garantir permissões para o diretório de saída
         run: |
           chmod -R 777 ${{ github.workspace }}/out
+          chmod -R 777 ${{ github.workspace }}/.dc-data
 
       - name: Verificar diretório de trabalho
         run: |
           echo "Current directory:"
           pwd
-          ls -alh      
+          ls -alh
+          ls -alh ${{ github.workspace }}/.dc-data      
 
       - name: Checkout código
         uses: actions/checkout@v3
@@ -54,6 +56,10 @@ jobs:
         with:
          name: semgrep-report
          path: out/semgrep-report.json
+
+      - name: Remover banco de dados corrompido
+        run: |
+          rm -rf ${{ github.workspace }}/.dc-data/*
 
       - name: Cache Dependency-Check Data
         uses: actions/cache@v4
