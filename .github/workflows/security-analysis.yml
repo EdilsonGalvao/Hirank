@@ -51,7 +51,7 @@ jobs:
       - name: Instalar Dependency-Check
         run: |
           apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
-          wget https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.7/dependency-check-9.0.7-release.zip
+          wget https://github.com/dependency-check/DependencyCheck/releases/download/v12.1.3/dependency-check-12.1.3-release.zip
           unzip dependency-check-9.0.7-release.zip -d ../tools
       
       - name: Verificar Dependency-Check Version
@@ -63,11 +63,11 @@ jobs:
         run: |
           mkdir -p ../out
           ../tools/dependency-check/bin/dependency-check.sh \
-            --project "App Project" \
+            --project "app" \
             --scan . \
             --format "JSON" \
-            --data "${DC_DATA_DIR}" \            
-            --disableNvd
+            --data "${DC_DATA_DIR}" \
+            --nvdApiKey "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9" \
             --disableArchive \
             --failOnCVSS 0 \
             --out ../out
@@ -77,5 +77,3 @@ jobs:
         with:
           name: dc-security-reports
           path: out/
-
-
