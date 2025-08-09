@@ -50,7 +50,7 @@ jobs:
 
       - name: DC Version
         run: |
-          $DC_INSTALL_DIR/bin/dependency-check.sh --version
+          ${{env.DC_INSTALL_DIR}}/bin/dependency-check.sh --version
 
       - name : Purge DC Database IF EXIST
         continue-on-error: true
