@@ -67,9 +67,15 @@ jobs:
         run: |
           echo "Conteúdo do diretório de saída:"
           ls -alR 
+     
+      - name: Verificar conteúdo do diretório de saída
+        run: |
+          echo "Conteúdo do diretório de saída:"
+          ls -alR ${{ github.workspace }}/out    
           
       - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
           path: out/dependency-check-report.json
+
