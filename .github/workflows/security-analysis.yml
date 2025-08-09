@@ -24,12 +24,6 @@ jobs:
       DC_API_KEY: "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"
 
     steps:
-      - name: Verificar diretório de trabalho
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -alR
-
       - name: SCA - Install Dependency-Check
         run: |
             apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
@@ -63,20 +57,13 @@ jobs:
             --failOnCVSS 0 \
             --out /out
 
-      # Passo de diagnóstico: Verificar conteúdo do diretório de saída
       - name: Verificar conteúdo do diretório de saída
         run: |
           echo "Conteúdo do diretório de saída:"
-          ls -alR ${{ github.workspace }}/out
-
-      # Passo de diagnóstico: Verificar permissões do arquivo
-      - name: Verificar permissões do arquivo
-        run: |
-          ls -l ${{ github.workspace }}/out/dependency-check-report.json
+          ls -alR /out
           
       - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: ${{ github.workspace }}/out/dependency-check-report.json
-
+          path: out/dependency-check-report.json
