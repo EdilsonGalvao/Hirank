@@ -61,7 +61,7 @@ jobs:
             --data "${{ env.DC_DATA_DIR }}" \
             --disableArchive \
             --failOnCVSS 0 \
-            --out ../out
+            --out ${{ github.workspace }}/out
 
       - name: Verificar conteúdo do diretório de saída
         run: |
