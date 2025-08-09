@@ -52,7 +52,7 @@ jobs:
       - name: SCA - Rodar Dependency-Check
         continue-on-error: true
         run: |
-          mkdir -p ../out
+          mkdir -p out
           ../tools/dependency-check/bin/dependency-check.sh \
             --project "app" \
             --scan . \
@@ -78,7 +78,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path:  ${{ github.workspace }}/out/*.json
-
-
+          path: ${{ github.workspace }}/out/dependency-check-report.json
 
