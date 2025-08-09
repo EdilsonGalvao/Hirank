@@ -37,8 +37,8 @@ jobs:
       - name : SCA - Purge DC Database IF EXIST
         continue-on-error: true
         run: | 
-          if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db]; then           
-            $DC_INSTALL_DIR/bin/dependency-check.sH --purge 
+          if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db ]; then           
+            $DC_INSTALL_DIR/bin/dependency-check.sh --purge 
           else
             echo "Database not exist!"
           fi       
@@ -61,14 +61,13 @@ jobs:
         run: |
           echo "Conteúdo do diretório de saída:"
           ls -alR ${{ github.workspace }}/out
-      
+
       - name: Print
         run: |
           cat ${{ github.workspace }}/out/dependency-check-report.json
 
-      - name: SCA -  Upload Reports
+      - name: SCA - Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
           path: ${{ github.workspace }}/out/dependency-check-report.json
-
