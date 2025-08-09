@@ -77,5 +77,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: out/dependency-check-report.json
+          path: ${{ github.workspace }}/out/dependency-check-report.json
+
 
