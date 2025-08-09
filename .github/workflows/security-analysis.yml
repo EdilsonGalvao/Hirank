@@ -15,11 +15,17 @@ jobs:
       image: ghcr.io/catthehacker/ubuntu:act-22.04
     defaults:
       run:
-        working-directory: app
+        working-directory: .
     env:
       DC_DATA_DIR: ${{ github.workspace }}/.dc-data
 
     steps:
+      - name: Verificar diretório de trabalho
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -alh
+
       - name: Garantir que o diretório de dados exista
         run: |
           mkdir -p ${{ github.workspace }}/.dc-data
