@@ -18,7 +18,7 @@ jobs:
         working-directory: .
 
     env:
-      DC_VERSION: "v12.1.3"
+      DC_VERSION: "12.1.3"
       DC_INSTALL_DIR: ${{ github.workspace }}/tools/dependency-check
       DC_DATA_DIR: ${{ github.workspace }}/.dc-data
       DC_API_KEY: "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"
@@ -28,7 +28,7 @@ jobs:
         run: |
           if [ ! -d "$DC_INSTALL_DIR" ]; then
             apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
-            wget https://github.com/dependency-check/DependencyCheck/releases/download/${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
+            wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
             unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d $DC_INSTALL_DIR
           else
             echo "DC Already Installed."
