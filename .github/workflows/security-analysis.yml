@@ -62,7 +62,11 @@ jobs:
           echo "Conteúdo do diretório de saída:"
           ls -alR ${{ github.workspace }}/out
 
-      - name: Print
+      - name: Verificar permissões do arquivo
+        run: |
+          ls -l ${{ github.workspace }}/out/dependency-check-report.json
+
+      - name: Print conteúdo do relatório
         run: |
           cat ${{ github.workspace }}/out/dependency-check-report.json
 
@@ -70,4 +74,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: ${{ github.workspace }}/out/dependency-check-report.json
+          path: out/dependency-check-report.json
