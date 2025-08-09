@@ -20,6 +20,14 @@ jobs:
       DC_DATA_DIR: ${{ github.workspace }}/.dc-data
 
     steps:
+      - name: Garantir que o diretório de dados exista
+        run: |
+          mkdir -p ${{ github.workspace }}/.dc-data
+
+      - name: Garantir permissões para o diretório de saída
+        run: |
+          chmod -R 777 ${{ github.workspace }}/out
+
       - name: Checkout código
         uses: actions/checkout@v3
 
