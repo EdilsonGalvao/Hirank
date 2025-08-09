@@ -30,6 +30,14 @@ jobs:
             wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
             unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
 
+      - name: Cache NVD Data
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.dc-data
+          key: ${{ runner.os }}-dcdata-${{ env.DC_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-dcdata-
+
       - name: SCA - DC Version
         run: |
           ../tools/dependency-check/bin/dependency-check.sh --version
@@ -74,4 +82,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: out/dependency-check-report.json
+          path: ${{ github.workspace }}/out/dependency-check-report.json
