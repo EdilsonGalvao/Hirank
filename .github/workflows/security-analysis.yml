@@ -26,7 +26,6 @@ jobs:
     steps:
       - name: Create Folders
         run: |
-          mkdir -p $DC_INSTALL_DIR
           mkdir -p ${{ env.DC_DATA_DIR }}
           mkdir -p ${{ github.workspace }}/out
 
