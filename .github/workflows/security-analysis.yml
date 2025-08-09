@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
-          ls -alh
+          ls -alR
 
       - name: Install Dependency-Check as SCA
         run: |
