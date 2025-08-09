@@ -9,7 +9,7 @@ on:
 
 jobs:
   security-scan:
-    name: SCA e SAST
+    name: SCA and SAST
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/catthehacker/ubuntu:act-22.04
@@ -26,35 +26,34 @@ jobs:
     steps:
       - name: Verificar diretório de trabalho
         run: |
-          echo "Diretório atual:"
+          echo "Current directory:"
           pwd
           ls -alR
 
-      - name: SCA - Instalar Dependency-Check
+      - name: SCA - Install Dependency-Check
         run: |
-          apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
-          wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
-          unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ${{ github.workspace }}/tools 
+            apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
+            wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
+            unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
 
-      - name: SCA - Versão do DC
+      - name: SCA - DC Version
         run: |
-          ${{ env.DC_INSTALL_DIR }}/bin/dependency-check.sh --version
+          ../tools/dependency-check/bin/dependency-check.sh --version
 
-      - name : SCA - Limpar Banco de Dados DC SE EXISTIR
+      - name : SCA - Purge DC Database IF EXIST
         continue-on-error: true
         run: | 
-          if [ -f "${{ env.DC_DATA_DIR }}/odc.mv.db" ]; then 
-            echo "Banco de dados existente, realizando a limpeza..."
-            ${{ env.DC_INSTALL_DIR }}/bin/dependency-check.sh --purge
+          if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db]; then           
+            $DC_INSTALL_DIR/bin/dependency-check.sH --purge 
           else
-            echo "Banco de dados não existe!"
-          fi    
+            echo "Database not exist!"
+          fi       
 
       - name: SCA - Rodar Dependency-Check
         continue-on-error: true
         run: |
           mkdir -p out
-          ${{ env.DC_INSTALL_DIR }}/bin/dependency-check.sh \
+          ../tools/dependency-check/bin/dependency-check.sh \
             --project "app" \
             --scan . \
             --format "JSON" \
@@ -62,7 +61,7 @@ jobs:
             --data "${{ env.DC_DATA_DIR }}" \
             --disableArchive \
             --failOnCVSS 0 \
-            --out ${{ github.workspace }}/out
+            --out /out
 
       # Passo de diagnóstico: Verificar conteúdo do diretório de saída
       - name: Verificar conteúdo do diretório de saída
@@ -75,8 +74,9 @@ jobs:
         run: |
           ls -l ${{ github.workspace }}/out/dependency-check-report.json
           
-      - name: SCA - Upload dos Relatórios
+      - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
           path: ${{ github.workspace }}/out/dependency-check-report.json
+
