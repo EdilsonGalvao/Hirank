@@ -32,15 +32,15 @@ jobs:
 
       - name: SAST - Run Semgrep
         run: |
-          mkdir -p ../out
-          semgrep --config auto --json > ../out/semgrep-report.json
+          mkdir -p out
+          semgrep --config auto --json > out/semgrep-report.json
 
       - name: SAST - Upload Semgrep Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
          name: semgrep-report
-         path: ../out/semgrep-report.json
+         path: out/semgrep-report.json
 
       # - name: SCA - Install Dependency-Check
       #   run: |
