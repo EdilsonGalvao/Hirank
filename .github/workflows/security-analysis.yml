@@ -40,7 +40,7 @@ jobs:
         if: always()
         with:
          name: semgrep-report
-         path: out/semgrep-report.json
+         path: ../out/semgrep-report.json
 
       # - name: SCA - Install Dependency-Check
       #   run: |
