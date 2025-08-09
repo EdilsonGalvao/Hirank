@@ -30,23 +30,17 @@ jobs:
           pwd
           ls -alR
 
-      - name: Install Dependency-Check as SCA
+      - name: SCA - Install Dependency-Check
         run: |
             apt-get update && apt-get install -y openjdk-17-jre-headless wget unzip
             wget https://github.com/dependency-check/DependencyCheck/releases/download/v${{ env.DC_VERSION }}/dependency-check-${{ env.DC_VERSION }}-release.zip
             unzip dependency-check-${{ env.DC_VERSION }}-release.zip -d ../tools  
-      
-      - name: Verificar diretório de trabalho
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -alR
 
-      - name: DC Version
+      - name: SCA - DC Version
         run: |
           ../tools/dependency-check/bin/dependency-check.sh --version
 
-      - name : Purge DC Database IF EXIST
+      - name : SCA - Purge DC Database IF EXIST
         continue-on-error: true
         run: | 
           if [ -f ${{env.DC_DATA_DIR}}/odc.mv.db]; then           
@@ -55,7 +49,7 @@ jobs:
             echo "Database not exist!"
           fi       
 
-      - name: Rodar Dependency-Check
+      - name: SCA - Rodar Dependency-Check
         continue-on-error: true
         run: |
           mkdir -p ../out
@@ -69,8 +63,8 @@ jobs:
             --failOnCVSS 0 \
             --out ../out
 
-      - name: Upload Reports
+      - name: SCA -  Upload Reports
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: ../out
+          path: out/dependency-check-report.json
