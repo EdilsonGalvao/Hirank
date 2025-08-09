@@ -78,6 +78,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dc-security-reports
-          path: out/
+          path:  ${{ github.workspace }}/out/*.json
+
 
 
