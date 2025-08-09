@@ -24,6 +24,11 @@ jobs:
       DC_API_KEY: "47a91695-56d0-4ec1-b6e5-b81dd7d9f0e9"
 
     steps:
+      - name: Create Folders
+        run: |
+          mkdir -p ${{ env.DC_DATA_DIR }}
+          mkdir -p ${{ github.workspace }}/out
+
       - name: Install Dependency-Check as SCA
         run: |
           if [ ! -d "$DC_INSTALL_DIR" ]; then
